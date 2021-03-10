@@ -1,0 +1,39 @@
+{
+  // Use IntelliSense to learn about possible attributes.
+  // Hover to view descriptions of existing attributes.
+  // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Launch Program",
+      "program": "${workspaceFolder}\\tot-look-ahead\\index.ts",
+      "outFiles": ["${workspaceFolder}/**/*.js"]
+    },
+    {
+      "name": "Launch tar.gz",
+      "type": "node",
+      "request": "launch",
+      "program": "${workspaceFolder}\\tot-look-ahead\\index.ts",
+      "stopOnEntry": false,
+      "args": [],
+      "cwd": "${workspaceFolder}",
+      "preLaunchTask": null,
+      "runtimeExecutable": null,
+      "runtimeArgs": ["--nolazy"],
+      "env": {
+        "NODE_ENV": "development",
+        "INPUT_rootFolderOrFile": "C:\\agents\\latest\\_work\\21\\s",
+        "INPUT_includeRootFolder": "true",
+        "INPUT_archiveType": "tar",
+        "INPUT_tarCompression": "gz",
+        "INPUT_archiveFile": "c:\\temp\\test.tar.gz",
+        "INPUT_replaceExistingArchive": "true",
+        "BUILD_SOURCESDIRECTORY": "C:\\agents\\latest\\_work\\21\\s"
+      },
+      "sourceMaps": true,
+      "outFiles": ["${workspaceFolder}\\_build\\Tasks\\tot-look-ahead\\"]
+    }
+  ]
+}

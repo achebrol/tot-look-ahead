@@ -1,0 +1,23 @@
+{
+  "name": "tot-look-ahead",
+  "version": "1.0.0",
+  "description": "TOT LookAhead Update",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@types/form-data": "^2.5.0",
+    "azure-pipelines-task-lib": "^3.1.0",
+    "form-data": "^4.0.0",
+    "node-fetch": "^2.6.1"
+  },
+  "devDependencies": {
+    "@types/node": "^14.14.33",
+    "@types/node-fetch": "^2.5.8",
+    "@types/q": "^1.5.4",
+    "typescript": "^4.2.3"
+  }
+}

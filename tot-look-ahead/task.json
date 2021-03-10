@@ -1,0 +1,191 @@
+{
+  "$schema": "https://raw.githubusercontent.com/Microsoft/azure-pipelines-task-lib/master/tasks.schema.json",
+  "id": "870d37ac-c99a-492c-b1fd-e8a2b094ad4f",
+  "name": "tot-look-ahead",
+  "friendlyName": "TOT LookAhead Update",
+  "description": "Custom Task to add entry to TOT LookAhead",
+  "helpMarkDown": "",
+  "category": "Utility",
+  "author": "Azeet Chebrolu",
+  "version": {
+    "Major": 0,
+    "Minor": 1,
+    "Patch": 0
+  },
+  "instanceNameFormat": "TOT Look Ahead Update",
+  "inputs": [
+    {
+      "name": "clientId",
+      "type": "string",
+      "label": "Client ID",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Client ID"
+    },
+    {
+      "name": "clientSecret",
+      "type": "string",
+      "label": "Client Secret",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Client Secret"
+    },
+    {
+      "name": "changeNo",
+      "type": "string",
+      "label": "Change # Required",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Cherwell Change # Required"
+    },
+    {
+      "name": "status",
+      "type": "string",
+      "label": "Status",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Status"
+    },
+    {
+      "name": "startDate",
+      "type": "string",
+      "label": "Start Date & Time(CT)",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Start Date & Time(CT)"
+    },
+    {
+      "name": "endDate",
+      "type": "string",
+      "label": "End Date & Time(CT)",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "End Date & Time(CT)"
+    },
+    {
+      "name": "application",
+      "type": "string",
+      "label": "Application/System",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Application/System affected"
+    },
+    {
+      "name": "changeTitle",
+      "type": "string",
+      "label": "Change Title",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Change Title"
+    },
+    {
+      "name": "businessDescription",
+      "type": "multiLine",
+      "label": "Business Description",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Business Description"
+    },
+    {
+      "name": "technicalDescription",
+      "type": "multiLine",
+      "label": "Technical Description",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Technical Description"
+    },
+    {
+      "name": "impact",
+      "type": "string",
+      "label": "Impact",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Impact"
+    },
+    {
+      "name": "teamsInvolved",
+      "type": "string",
+      "label": "Teams Involved",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Teams Involved"
+    },
+    {
+      "name": "srManager",
+      "type": "string",
+      "label": "Sr. Manager",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "Sr. Manager"
+    },
+    {
+      "name": "comms",
+      "type": "pickList",
+      "label": "Comms",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Comms"
+    },
+    {
+      "name": "fleetMigrationImpact",
+      "type": "multiLine",
+      "label": "Fleet Migration Impact",
+      "defaultValue": "No",
+      "required": false,
+      "helpMarkDown": "Fleet Migration Impact"
+    },
+    {
+      "name": "fleetMigrationImpact",
+      "type": "multiLine",
+      "label": "Fleet Migration Impact",
+      "defaultValue": "No",
+      "required": false,
+      "helpMarkDown": "Fleet Migration Impact"
+    },
+    {
+      "name": "commsUrl",
+      "type": "string",
+      "label": "Comms URL",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Comms URL"
+    },
+    {
+      "name": "commsText",
+      "type": "string",
+      "label": "Alternative Text",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Alternative Text"
+    },
+    {
+      "name": "assignedResource",
+      "type": "string",
+      "label": "POC or Assigned Resource",
+      "defaultValue": "No",
+      "required": false,
+      "helpMarkDown": "POC or Assigned Resource"
+    },
+    {
+      "name": "additionalNotesUrl",
+      "type": "string",
+      "label": "Additional Notes Url",
+      "defaultValue": "No",
+      "required": false,
+      "helpMarkDown": "additionalNotesUrl"
+    },
+    {
+      "name": "additionalNotesText",
+      "type": "string",
+      "label": "Alternative Text",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Alternative Text"
+    }
+  ],
+  "execution": {
+    "Node10": {
+      "target": "index.js"
+    }
+  }
+}
