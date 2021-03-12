@@ -3,7 +3,7 @@
   "id": "tot-look-ahead-update-task",
   "name": "TOT Look Ahead Update",
   "version": "0.0.1",
-  "publisher": "American Airlines(TechOps IT)",
+  "publisher": "AmericanAirlines",
   "targets": [
     {
       "id": "Microsoft.VisualStudio.Services"
