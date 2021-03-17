@@ -36,7 +36,8 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 exports.__esModule = true;
-exports.getWorkItemsforNotes = void 0;
+exports.getReleaseStartTime = exports.getReleaseEndTime = exports.getWorkItemsforNotes = void 0;
+var ReleaseInterfaces = require("azure-devops-node-api/interfaces/ReleaseInterfaces");
 var azdev = require("azure-devops-node-api");
 var tl = require("azure-pipelines-task-lib/task");
 //ADO Connecton Objects
@@ -48,6 +49,10 @@ var build;
 var releaseId = Number(tl.getVariable("Release.ReleaseId"));
 var buildId = Number(tl.getVariable("Build.BuildId"));
 var teamProject = tl.getVariable("System.TeamProject") || '';
+var environmentId = Number(tl.getVariable("Release.EnvironmentId"));
+var deploymentId = Number(tl.getVariable("Release.DeploymentID"));
+var phaseId = Number(tl.getVariable("Release.DeployPhaseID"));
+var collectionUri = '';
 //ADO Connecton Objects
 var endpointUrlDefault = tl.getVariable('System.TeamFoundationCollectionUri') || '';
 var accessTokenDefault = tl.getEndpointAuthorizationParameter('SYSTEMVSSCONNECTION', 'AccessToken', false) || '';
@@ -59,6 +64,7 @@ function getWorkItemsforNotes(endpointUrl, accessToken) {
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
+                    collectionUri = endpointUrl;
                     credentialHandler = azdev.getHandlerFromToken(accessToken);
                     webApi = new azdev.WebApi(endpointUrl, credentialHandler);
                     return [4 /*yield*/, getReleaseApi()];
@@ -197,14 +203,18 @@ function getReleaseWorkItems() {
 }
 function getWorkItems(workItemIds) {
     return __awaiter(this, void 0, void 0, function () {
-        var fieldsOnPrem, fieldsSaaS, workItems, e_4;
+        var onPrem, fieldsOnPrem, fieldsSaaS, workItems, e_4;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
                     _a.trys.push([0, 2, , 3]);
+                    onPrem = false;
+                    if (collectionUri.indexOf("dev.azure.com") === -1 || collectionUri.indexOf("visualstudio.com") === -1) {
+                        onPrem = true;
+                    }
                     fieldsOnPrem = ["System.Id", "AAIT.ID", "System.Title", "System.WorkItemType"];
-                    fieldsSaaS = ["System.Id", "AAIT.ID", "System.Title", "System.WorkItemType"];
-                    return [4 /*yield*/, workItemApi.getWorkItems(workItemIds, fieldsOnPrem)];
+                    fieldsSaaS = ["System.Id", "System.Title", "System.WorkItemType"];
+                    return [4 /*yield*/, workItemApi.getWorkItems(workItemIds, onPrem ? fieldsOnPrem : fieldsSaaS)];
                 case 1:
                     workItems = _a.sent();
                     tl.debug("Retrieved work items.");
@@ -315,12 +325,114 @@ function getBuildCommitWorkItems(commitIds) {
         });
     });
 }
+function getReleaseEndTime(endpointUrl, accessToken) {
+    var _a, _b, _c, _d, _e, _f, _g, _h;
+    if (endpointUrl === void 0) { endpointUrl = endpointUrlDefault; }
+    if (accessToken === void 0) { accessToken = accessTokenDefault; }
+    return __awaiter(this, void 0, void 0, function () {
+        var credentialHandler, release, deploymentJobs, endDate, _i, deploymentJobs_1, deploymentJob, taskGroups, _j, taskGroups_1, taskGroup, task;
+        return __generator(this, function (_k) {
+            switch (_k.label) {
+                case 0:
+                    credentialHandler = azdev.getHandlerFromToken(accessToken);
+                    webApi = new azdev.WebApi(endpointUrl, credentialHandler);
+                    return [4 /*yield*/, getReleaseApi()];
+                case 1:
+                    releaseApi = _k.sent();
+                    return [4 /*yield*/, getRelease()];
+                case 2:
+                    release = _k.sent();
+                    deploymentJobs = (_f = (_e = (_d = (_c = (_b = (_a = release === null || release === void 0 ? void 0 : release.environments) === null || _a === void 0 ? void 0 : _a.find(function (w) { return (w === null || w === void 0 ? void 0 : w.id) === environmentId; })) === null || _b === void 0 ? void 0 : _b.deploySteps) === null || _c === void 0 ? void 0 : _c.find(function (f) { return (f === null || f === void 0 ? void 0 : f.deploymentId) === deploymentId; })) === null || _d === void 0 ? void 0 : _d.releaseDeployPhases) === null || _e === void 0 ? void 0 : _e.find(function (g) { return (g === null || g === void 0 ? void 0 : g.phaseId) === phaseId.toString(); })) === null || _f === void 0 ? void 0 : _f.deploymentJobs;
+                    endDate = "";
+                    if (deploymentJobs) {
+                        for (_i = 0, deploymentJobs_1 = deploymentJobs; _i < deploymentJobs_1.length; _i++) {
+                            deploymentJob = deploymentJobs_1[_i];
+                            if (deploymentJob.tasks !== undefined) {
+                                taskGroups = deploymentJob.tasks;
+                                for (_j = 0, taskGroups_1 = taskGroups; _j < taskGroups_1.length; _j++) {
+                                    taskGroup = taskGroups_1[_j];
+                                    if (taskGroup.task !== undefined) {
+                                        task = taskGroup.task;
+                                        if (((_g = task === null || task === void 0 ? void 0 : task.name) === null || _g === void 0 ? void 0 : _g.indexOf('Cherwell')) === 0) {
+                                            try {
+                                                endDate = ((_h = taskGroup === null || taskGroup === void 0 ? void 0 : taskGroup.dateStarted) === null || _h === void 0 ? void 0 : _h.toLocaleString()) || '';
+                                            }
+                                            catch (e) {
+                                                endDate = new Date().toLocaleString();
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    return [2 /*return*/, endDate];
+            }
+        });
+    });
+}
+exports.getReleaseEndTime = getReleaseEndTime;
+function getRelease() {
+    return __awaiter(this, void 0, void 0, function () {
+        var release, e_7;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    _a.trys.push([0, 2, , 3]);
+                    return [4 /*yield*/, releaseApi.getRelease(teamProject, releaseId, undefined, undefined, ReleaseInterfaces.SingleReleaseExpands.Tasks, undefined)];
+                case 1:
+                    release = _a.sent();
+                    tl.debug("Retrieved release");
+                    return [2 /*return*/, release];
+                case 2:
+                    e_7 = _a.sent();
+                    tl.error("Unable to retrieve Release.");
+                    tl.error(e_7.toString());
+                    setFailedRelease();
+                    return [2 /*return*/, null];
+                case 3: return [2 /*return*/];
+            }
+        });
+    });
+}
+function getReleaseStartTime(endpointUrl, accessToken) {
+    var _a, _b, _c, _d, _e, _f, _g;
+    if (endpointUrl === void 0) { endpointUrl = endpointUrlDefault; }
+    if (accessToken === void 0) { accessToken = accessTokenDefault; }
+    return __awaiter(this, void 0, void 0, function () {
+        var credentialHandler, release;
+        return __generator(this, function (_h) {
+            switch (_h.label) {
+                case 0:
+                    credentialHandler = azdev.getHandlerFromToken(accessToken);
+                    webApi = new azdev.WebApi(endpointUrl, credentialHandler);
+                    return [4 /*yield*/, getReleaseApi()];
+                case 1:
+                    releaseApi = _h.sent();
+                    return [4 /*yield*/, getRelease()];
+                case 2:
+                    release = _h.sent();
+                    if (release) {
+                        return [2 /*return*/, (_g = (_f = (_e = (_d = (_c = (_b = (_a = release === null || release === void 0 ? void 0 : release.environments) === null || _a === void 0 ? void 0 : _a.find(function (w) { return w.id == environmentId; })) === null || _b === void 0 ? void 0 : _b.deploySteps) === null || _c === void 0 ? void 0 : _c.find(function (f) { return f.deploymentId === deploymentId; })) === null || _d === void 0 ? void 0 : _d.releaseDeployPhases) === null || _e === void 0 ? void 0 : _e.find(function (g) { return g.phaseId == phaseId.toString(); })) === null || _f === void 0 ? void 0 : _f.startedOn) === null || _g === void 0 ? void 0 : _g.toLocaleString()];
+                    }
+                    return [2 /*return*/, null];
+            }
+        });
+    });
+}
+exports.getReleaseStartTime = getReleaseStartTime;
 // //Debugging the code for testing.
 // let azdoToken = "mhuanek6d7xj5prvshjqc7vujlywqzyquhtx2bkbtr6jkwxe34wa";
-// let collectionUri = 'https://azuredevops.aa.com/USAIT/';
+//  collectionUri = 'https://azuredevops.aa.com/USAIT/';
 // //const credentialHandler: IRequestHandler = azdev.getHandlerFromToken(azdoToken);
 // releaseId = 137672;
 // buildId = 700605
 // teamProject = 'TechOpsR';
+//  environmentId =698075
+//  deploymentId =180041
+//  phaseId = 176215
 // let result= getWorkItemsforNotes(collectionUri,azdoToken);
 // console.log(result);
+//  //let result= await getReleaseStartTime(collectionUri,azdoToken);
+//getReleaseStartTime(collectionUri,azdoToken).then((x)=> console.log(x)  )
+//getReleaseEndTime(collectionUri,azdoToken).then((x)=> console.log(x)  )

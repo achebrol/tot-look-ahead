@@ -1,7 +1,7 @@
 import * as tl from 'azure-pipelines-task-lib/task';
 import fetch from 'node-fetch';
 import FormData = require("form-data");
-import {getWorkItemsforNotes} from './workitem';
+import {getWorkItemsforNotes, getReleaseEndTime , getReleaseStartTime} from './workitem';
 async function run() {
   try {
     const url = 'https://spteam.aa.com/sites/MnE/TechOps';
