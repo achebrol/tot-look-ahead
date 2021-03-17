@@ -1,14 +1,13 @@
 import * as ReleaseApi from 'azure-devops-node-api/ReleaseApi';
 import * as ReleaseInterfaces from 'azure-devops-node-api/interfaces/ReleaseInterfaces';
-import * as BuildApi from "azure-devops-node-api/BuildApi";
-import * as BuildInterfaces from "azure-devops-node-api/interfaces/BuildInterfaces";
+import * as BuildApi from 'azure-devops-node-api/BuildApi';
+import * as BuildInterfaces from 'azure-devops-node-api/interfaces/BuildInterfaces';
 import * as WorkItemTrackingInterfaces from 'azure-devops-node-api/interfaces/WorkItemTrackingInterfaces';
 import * as WorkItemTrackingApi from 'azure-devops-node-api/WorkItemTrackingApi';
 import { IRequestHandler } from 'azure-devops-node-api/interfaces/common/VsoBaseInterfaces';
-import * as azdev from 'azure-devops-node-api'
-import * as  tl from 'azure-pipelines-task-lib/task';
-import * as VSSInterfaces from "azure-devops-node-api/interfaces/common/VSSInterfaces";
-
+import * as azdev from 'azure-devops-node-api';
+import * as tl from 'azure-pipelines-task-lib/task';
+import * as VSSInterfaces from 'azure-devops-node-api/interfaces/common/VSSInterfaces';
 
 //ADO Connecton Objects
 
@@ -65,57 +64,63 @@ async function getWorkItemsforNotes(endpointUrl : string  = endpointUrlDefault,a
 }
 
 async function getReleaseApi() {
-    let releaseApi;
-    try {
-         releaseApi = await webApi.getReleaseApi();
-        tl.debug("Retrieved release work items.");
-        return releaseApi;
-    } catch (e) {
-        tl.error("Unable to initialize getReleaseApi");
-        tl.error(e.toString());
-        setFailedRelease();
-        return null;
-    }
+  let releaseApi;
+  try {
+    releaseApi = await webApi.getReleaseApi();
+    tl.debug('Retrieved release work items.');
     return releaseApi;
+  } catch (e) {
+    tl.error('Unable to initialize getReleaseApi');
+    tl.error(e.toString());
+    setFailedRelease();
+    return null;
+  }
+  return releaseApi;
 }
 function setFailedRelease() {
-    tl.setResult(tl.TaskResult.Failed, "Failed", undefined);
+  tl.setResult(tl.TaskResult.Failed, 'Failed', undefined);
 }
 
 async function getBuildApi() {
-    let buildApi = await webApi.getBuildApi();        
-    return buildApi;
+  let buildApi = await webApi.getBuildApi();
+  return buildApi;
 }
 
 async function getWorkItemApi() {
-    let workItemApi = await webApi.getWorkItemTrackingApi();    
-    return workItemApi;
+  let workItemApi = await webApi.getWorkItemTrackingApi();
+  return workItemApi;
 }
 
 async function getBuildWorkItems() {
-    try {
-        const buildWorkItemRefs: VSSInterfaces.ResourceRef[] = await buildApi.getBuildWorkItemsRefs(teamProject, build.id||0);
-        tl.debug("Retrieved Build work items.");
-        return buildWorkItemRefs;
-    } catch (e) {
-        tl.error("Unable to retrieve Build Work Items.");
-        tl.error(e.toString());
-        setFailedRelease();
-        return null;
-    }
+  try {
+    const buildWorkItemRefs: VSSInterfaces.ResourceRef[] = await buildApi.getBuildWorkItemsRefs(
+      teamProject,
+      build.id || 0
+    );
+    tl.debug('Retrieved Build work items.');
+    return buildWorkItemRefs;
+  } catch (e) {
+    tl.error('Unable to retrieve Build Work Items.');
+    tl.error(e.toString());
+    setFailedRelease();
+    return null;
+  }
 }
 
 async function getReleaseWorkItems() {
-    try {
-        const releaseWorkItemRefs: ReleaseInterfaces.ReleaseWorkItemRef[] = await releaseApi.getReleaseWorkItemsRefs(teamProject, releaseId);
-        tl.debug("Retrieved release work items.");
-        return releaseWorkItemRefs;
-    } catch (e) {
-        tl.error("Unable to retrieve Release Work Items.");
-        tl.error(e.toString());
-        setFailedRelease();
-        return null;
-    }
+  try {
+    const releaseWorkItemRefs: ReleaseInterfaces.ReleaseWorkItemRef[] = await releaseApi.getReleaseWorkItemsRefs(
+      teamProject,
+      releaseId
+    );
+    tl.debug('Retrieved release work items.');
+    return releaseWorkItemRefs;
+  } catch (e) {
+    tl.error('Unable to retrieve Release Work Items.');
+    tl.error(e.toString());
+    setFailedRelease();
+    return null;
+  }
 }
 
 async function getWorkItems(workItemIds: number[]) {
@@ -140,69 +145,78 @@ async function getWorkItems(workItemIds: number[]) {
     }
 }
 async function getWorkItemsForReleaseNotes() {
-    let workItemIds: number[] = new Array<number>();
-    let returnValue: WorkItemTrackingInterfaces.WorkItem[] = [];    
-    let isRelease;
+  let workItemIds: number[] = new Array<number>();
+  let returnValue: WorkItemTrackingInterfaces.WorkItem[] = [];
+  let isRelease;
 
-    if (releaseId !== undefined && releaseId !== null && releaseId > 0) 
-    isRelease=true;
+  if (releaseId !== undefined && releaseId !== null && releaseId > 0) {
+    isRelease = true;
+  }
 
-    if (isRelease) {
-        let releaseWorkItems: ReleaseInterfaces.ReleaseWorkItemRef[] = await getReleaseWorkItems() || [];
-        if (releaseWorkItems !== null && releaseWorkItems !== undefined && releaseWorkItems.length > 0) {
-            releaseWorkItems.forEach(fe => workItemIds.indexOf(Number(fe.id)) === -1 ? workItemIds.push(Number(fe.id)) : null);
-        }
+  if (isRelease) {
+    let releaseWorkItems: ReleaseInterfaces.ReleaseWorkItemRef[] = (await getReleaseWorkItems()) || [];
+    if (releaseWorkItems !== null && releaseWorkItems !== undefined && releaseWorkItems.length > 0) {
+      releaseWorkItems.forEach((fe) =>
+        workItemIds.indexOf(Number(fe.id)) === -1 ? workItemIds.push(Number(fe.id)) : null
+      );
+    }
+  }
+
+  if (buildId !== undefined && buildId !== null && buildId > 0) {
+    build = await getBuild();
+  }
+
+  if (build !== null && build !== undefined) {
+    let buildWorkItems = await getBuildWorkItems();
+    if (buildWorkItems !== null && buildWorkItems !== undefined && buildWorkItems.length > 0) {
+      buildWorkItems.forEach((fe) =>
+        workItemIds.indexOf(Number(fe.id)) === -1 ? workItemIds.push(Number(fe.id)) : null
+      );
     }
 
-    if (buildId !== undefined && buildId !== null && buildId > 0) {
-        build = await getBuild();
+    let buildCommitWorkItems = await getBuildCommitWorkItems([build.sourceVersion || '']);
+    if (buildCommitWorkItems !== null && buildCommitWorkItems !== undefined && buildCommitWorkItems.length > 0) {
+      buildCommitWorkItems.forEach((fe) =>
+        workItemIds.indexOf(Number(fe.id)) === -1 ? workItemIds.push(Number(fe.id)) : null
+      );
     }
-    
 
-    if (build !== null && build !== undefined) {
-        let buildWorkItems = await getBuildWorkItems();
-        if (buildWorkItems !== null && buildWorkItems !== undefined && buildWorkItems.length > 0) {
-            buildWorkItems.forEach(fe => workItemIds.indexOf(Number(fe.id)) === -1 ? workItemIds.push(Number(fe.id)) : null);
-        }
-
-        let buildCommitWorkItems = await getBuildCommitWorkItems([build.sourceVersion||'']);
-        if (buildCommitWorkItems !== null && buildCommitWorkItems !== undefined && buildCommitWorkItems.length > 0) {
-            buildCommitWorkItems.forEach(fe => workItemIds.indexOf(Number(fe.id)) === -1 ? workItemIds.push(Number(fe.id)) : null);
-        }
-
-        if (workItemIds !== null && workItemIds !== undefined && workItemIds.length > 0) {
-            let workItems = await getWorkItems(workItemIds)||[];
-            returnValue = workItems;
-        }
+    if (workItemIds !== null && workItemIds !== undefined && workItemIds.length > 0) {
+      let workItems = (await getWorkItems(workItemIds)) || [];
+      returnValue = workItems;
     }
-    return returnValue;
+  }
+  return returnValue;
 }
 
 async function getBuild() {
-    try {
-        const returnedBuild: BuildInterfaces.Build = await buildApi.getBuild(teamProject, buildId);
-        tl.debug("Retrieved Build.");
-        return returnedBuild;
-    } catch (e) {
-        tl.error("Unable to retrieve Build.");
-        tl.error(e.toString());
-        setFailedRelease();
-        return null;
-    }
+  try {
+    const returnedBuild: BuildInterfaces.Build = await buildApi.getBuild(teamProject, buildId);
+    tl.debug('Retrieved Build.');
+    return returnedBuild;
+  } catch (e) {
+    tl.error('Unable to retrieve Build.');
+    tl.error(e.toString());
+    setFailedRelease();
+    throw e;
+  }
 }
 
-
 async function getBuildCommitWorkItems(commitIds: string[]) {
-    try {
-        const buildWorkItemRefs: VSSInterfaces.ResourceRef[] = await buildApi.getBuildWorkItemsRefsFromCommits(commitIds, teamProject, buildId);
-        tl.debug("Retrieved Build Commit work items.");
-        return buildWorkItemRefs;
-    } catch (e) {
-        tl.error("Unable to retrieve Build Commit Work Items.");
-        tl.error(e.toString());
-        setFailedRelease();
-        return null;
-    }
+  try {
+    const buildWorkItemRefs: VSSInterfaces.ResourceRef[] = await buildApi.getBuildWorkItemsRefsFromCommits(
+      commitIds,
+      teamProject,
+      buildId
+    );
+    tl.debug('Retrieved Build Commit work items.');
+    return buildWorkItemRefs;
+  } catch (e) {
+    tl.error('Unable to retrieve Build Commit Work Items.');
+    tl.error(e.toString());
+    setFailedRelease();
+    return null;
+  }
 }
 
 async function getReleaseEndTime(endpointUrl : string  = endpointUrlDefault,accessToken: string=accessTokenDefault ) {    
@@ -282,7 +296,6 @@ export {getWorkItemsforNotes, getReleaseEndTime , getReleaseStartTime};
 //  environmentId =698075
 //  deploymentId =180041
 //  phaseId = 176215
-
 
 
 // let result= getWorkItemsforNotes(collectionUri,azdoToken);

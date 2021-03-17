@@ -16,15 +16,16 @@ async function run() {
     //'TOT-LookAhead-Copy'; //
     //const listName: string | undefined = tl.getInput('listName', true);
     const changeNo: string | undefined = tl.getInput('changeNo', true);
-    const status: string | undefined = tl.getInput('status', true);
+    const status: string | undefined = 'Completed'; //tl.getInput('status', true);
     const changeTitle: string | undefined = tl.getInput('changeTitle', true);
     const application: string | undefined = tl.getInput('application', true);
-    const businessDescription: string | undefined = tl.getInput('businessDescription', false) + '\n'+ await getWorkItemsforNotes();
+    const businessDescription: string | undefined =
+      tl.getInput('businessDescription', false) + '\n' + (await getWorkItemsforNotes());
     const technicalDescription: string | undefined = tl.getInput('technicalDescription', false);
     const impact: string | undefined = tl.getInput('impact', true);
     const srManager: string | undefined = tl.getInput('srManager', true);
-    const startDate: string | undefined = tl.getInput('startDate', true);
-    const endDate: string | undefined = tl.getInput('endDate', true);
+    const startDate: string | undefined = ''; //tl.getInput('startDate', true);
+    const endDate: string | undefined = ''; //tl.getInput('endDate', true);
     const teamsInvolved: string | undefined = tl.getInput('teamsInvolved', false);
     const comms: string | undefined = tl.getInput('comms', false);
     const commsUrl: string | undefined = tl.getInput('commsUrl', false);
@@ -120,8 +121,6 @@ async function run() {
     console.log('Successfully added item to TOT LookAhead List');
     console.log('List Item Link:', itemResponse.d.__metadata.uri);
     tl.setVariable('TOT_LookAhead_Item_Link', itemResponse.d.__metadata.uri, false, true);
-
-
   } catch (err) {
     tl.setResult(tl.TaskResult.Failed, err.message);
   }

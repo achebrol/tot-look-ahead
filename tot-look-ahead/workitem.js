@@ -113,11 +113,11 @@ function getReleaseApi() {
                     return [4 /*yield*/, webApi.getReleaseApi()];
                 case 1:
                     releaseApi = _a.sent();
-                    tl.debug("Retrieved release work items.");
+                    tl.debug('Retrieved release work items.');
                     return [2 /*return*/, releaseApi];
                 case 2:
                     e_1 = _a.sent();
-                    tl.error("Unable to initialize getReleaseApi");
+                    tl.error('Unable to initialize getReleaseApi');
                     tl.error(e_1.toString());
                     setFailedRelease();
                     return [2 /*return*/, null];
@@ -127,7 +127,7 @@ function getReleaseApi() {
     });
 }
 function setFailedRelease() {
-    tl.setResult(tl.TaskResult.Failed, "Failed", undefined);
+    tl.setResult(tl.TaskResult.Failed, 'Failed', undefined);
 }
 function getBuildApi() {
     return __awaiter(this, void 0, void 0, function () {
@@ -165,11 +165,11 @@ function getBuildWorkItems() {
                     return [4 /*yield*/, buildApi.getBuildWorkItemsRefs(teamProject, build.id || 0)];
                 case 1:
                     buildWorkItemRefs = _a.sent();
-                    tl.debug("Retrieved Build work items.");
+                    tl.debug('Retrieved Build work items.');
                     return [2 /*return*/, buildWorkItemRefs];
                 case 2:
                     e_2 = _a.sent();
-                    tl.error("Unable to retrieve Build Work Items.");
+                    tl.error('Unable to retrieve Build Work Items.');
                     tl.error(e_2.toString());
                     setFailedRelease();
                     return [2 /*return*/, null];
@@ -188,11 +188,11 @@ function getReleaseWorkItems() {
                     return [4 /*yield*/, releaseApi.getReleaseWorkItemsRefs(teamProject, releaseId)];
                 case 1:
                     releaseWorkItemRefs = _a.sent();
-                    tl.debug("Retrieved release work items.");
+                    tl.debug('Retrieved release work items.');
                     return [2 /*return*/, releaseWorkItemRefs];
                 case 2:
                     e_3 = _a.sent();
-                    tl.error("Unable to retrieve Release Work Items.");
+                    tl.error('Unable to retrieve Release Work Items.');
                     tl.error(e_3.toString());
                     setFailedRelease();
                     return [2 /*return*/, null];
@@ -238,14 +238,17 @@ function getWorkItemsForReleaseNotes() {
                 case 0:
                     workItemIds = new Array();
                     returnValue = [];
-                    if (releaseId !== undefined && releaseId !== null && releaseId > 0)
+                    if (releaseId !== undefined && releaseId !== null && releaseId > 0) {
                         isRelease = true;
+                    }
                     if (!isRelease) return [3 /*break*/, 2];
                     return [4 /*yield*/, getReleaseWorkItems()];
                 case 1:
                     releaseWorkItems = (_a.sent()) || [];
                     if (releaseWorkItems !== null && releaseWorkItems !== undefined && releaseWorkItems.length > 0) {
-                        releaseWorkItems.forEach(function (fe) { return workItemIds.indexOf(Number(fe.id)) === -1 ? workItemIds.push(Number(fe.id)) : null; });
+                        releaseWorkItems.forEach(function (fe) {
+                            return workItemIds.indexOf(Number(fe.id)) === -1 ? workItemIds.push(Number(fe.id)) : null;
+                        });
                     }
                     _a.label = 2;
                 case 2:
@@ -260,13 +263,17 @@ function getWorkItemsForReleaseNotes() {
                 case 5:
                     buildWorkItems = _a.sent();
                     if (buildWorkItems !== null && buildWorkItems !== undefined && buildWorkItems.length > 0) {
-                        buildWorkItems.forEach(function (fe) { return workItemIds.indexOf(Number(fe.id)) === -1 ? workItemIds.push(Number(fe.id)) : null; });
+                        buildWorkItems.forEach(function (fe) {
+                            return workItemIds.indexOf(Number(fe.id)) === -1 ? workItemIds.push(Number(fe.id)) : null;
+                        });
                     }
                     return [4 /*yield*/, getBuildCommitWorkItems([build.sourceVersion || ''])];
                 case 6:
                     buildCommitWorkItems = _a.sent();
                     if (buildCommitWorkItems !== null && buildCommitWorkItems !== undefined && buildCommitWorkItems.length > 0) {
-                        buildCommitWorkItems.forEach(function (fe) { return workItemIds.indexOf(Number(fe.id)) === -1 ? workItemIds.push(Number(fe.id)) : null; });
+                        buildCommitWorkItems.forEach(function (fe) {
+                            return workItemIds.indexOf(Number(fe.id)) === -1 ? workItemIds.push(Number(fe.id)) : null;
+                        });
                     }
                     if (!(workItemIds !== null && workItemIds !== undefined && workItemIds.length > 0)) return [3 /*break*/, 8];
                     return [4 /*yield*/, getWorkItems(workItemIds)];
@@ -289,14 +296,14 @@ function getBuild() {
                     return [4 /*yield*/, buildApi.getBuild(teamProject, buildId)];
                 case 1:
                     returnedBuild = _a.sent();
-                    tl.debug("Retrieved Build.");
+                    tl.debug('Retrieved Build.');
                     return [2 /*return*/, returnedBuild];
                 case 2:
                     e_5 = _a.sent();
-                    tl.error("Unable to retrieve Build.");
+                    tl.error('Unable to retrieve Build.');
                     tl.error(e_5.toString());
                     setFailedRelease();
-                    return [2 /*return*/, null];
+                    throw e_5;
                 case 3: return [2 /*return*/];
             }
         });
@@ -312,11 +319,11 @@ function getBuildCommitWorkItems(commitIds) {
                     return [4 /*yield*/, buildApi.getBuildWorkItemsRefsFromCommits(commitIds, teamProject, buildId)];
                 case 1:
                     buildWorkItemRefs = _a.sent();
-                    tl.debug("Retrieved Build Commit work items.");
+                    tl.debug('Retrieved Build Commit work items.');
                     return [2 /*return*/, buildWorkItemRefs];
                 case 2:
                     e_6 = _a.sent();
-                    tl.error("Unable to retrieve Build Commit Work Items.");
+                    tl.error('Unable to retrieve Build Commit Work Items.');
                     tl.error(e_6.toString());
                     setFailedRelease();
                     return [2 /*return*/, null];

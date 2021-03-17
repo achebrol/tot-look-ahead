@@ -53,7 +53,7 @@ function run() {
                     clientId = tl.getInput('clientId', true);
                     clientSecret = tl.getInput('clientSecret', true);
                     changeNo = tl.getInput('changeNo', true);
-                    status_1 = tl.getInput('status', true);
+                    status_1 = 'Completed';
                     changeTitle = tl.getInput('changeTitle', true);
                     application = tl.getInput('application', true);
                     _a = tl.getInput('businessDescription', false) + '\n';
@@ -63,8 +63,8 @@ function run() {
                     technicalDescription = tl.getInput('technicalDescription', false);
                     impact = tl.getInput('impact', true);
                     srManager = tl.getInput('srManager', true);
-                    startDate = tl.getInput('startDate', true);
-                    endDate = tl.getInput('endDate', true);
+                    startDate = '';
+                    endDate = '';
                     teamsInvolved = tl.getInput('teamsInvolved', false);
                     comms = tl.getInput('comms', false);
                     commsUrl = tl.getInput('commsUrl', false);

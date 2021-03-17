@@ -38,30 +38,7 @@
       "required": false,
       "helpMarkDown": "Cherwell Change # Required"
     },
-    {
-      "name": "status",
-      "type": "string",
-      "label": "Status",
-      "defaultValue": "",
-      "required": false,
-      "helpMarkDown": "Status"
-    },
-    {
-      "name": "startDate",
-      "type": "string",
-      "label": "Start Date & Time(CT)",
-      "defaultValue": "",
-      "required": false,
-      "helpMarkDown": "Start Date & Time(CT)"
-    },
-    {
-      "name": "endDate",
-      "type": "string",
-      "label": "End Date & Time(CT)",
-      "defaultValue": "",
-      "required": false,
-      "helpMarkDown": "End Date & Time(CT)"
-    },
+
     {
       "name": "application",
       "type": "string",
@@ -96,11 +73,35 @@
     },
     {
       "name": "impact",
-      "type": "string",
+      "type": "pickList",
       "label": "Impact",
       "defaultValue": "",
       "required": true,
-      "helpMarkDown": "Impact"
+      "helpMarkDown": "Impact",
+      "options": {
+        "No Impact Expected: Rolling Restart": "No Impact Expected: Rolling Restart",
+        "No Impact Expected: Blue to Green Deployment": "No Impact Expected: Blue to Green Deployment",
+        "Min Impact: ReBoot Only": "Min Impact: ReBoot Only",
+        "NO Outage Expected": "NO Outage Expected",
+        "5 Min Outage Expected": "5 Min Outage Expected",
+        "10 Min Outage Expected": "10 Min Outage Expected",
+        "15 Min Outage Expected": "15 Min Outage Expected",
+        "20 Min Outage Expected": "20 Min Outage Expected",
+        "45 Min Outage Expected": "45 Min Outage Expected",
+        "1 Hour Outage Expected": "1 Hour Outage Expected",
+        "2 Hour Outage Expected": "2 Hour Outage Expected",
+        "3 Hour Outage Expected": "3 Hour Outage Expected",
+        "4 Hour Outage Expected": "4 Hour Outage Expected",
+        "Up to 6 Hours: Limited Functionality with static data": "Up to 6 Hours: Limited Functionality with static data",
+        "Application Outage Only": "Application Outage Only",
+        "SCEPTRE Full Outage and all Downstream Applications": "SCEPTRE Full Outage and all Downstream Applications",
+        "SCEPTRE Only - No Outage": "SCEPTRE Only - No Outage",
+        "SCEPTRE Only - Partial Outage (Minimal Transaction Stopped)": "SCEPTRE Only - Partial Outage (Minimal Transaction Stopped)",
+        "DEV ONLY": "DEV ONLY",
+        "TBD": "TBD",
+        "FYI - No Impact Expected": "FYI - No Impact Expected",
+        "Freeze": "Freeze"
+      }
     },
     {
       "name": "teamsInvolved",
@@ -124,7 +125,17 @@
       "label": "Comms",
       "defaultValue": "",
       "required": false,
-      "helpMarkDown": "Comms"
+      "helpMarkDown": "Comms",
+      "options": {
+        "": "",
+        "No Comm Required": "No Comm Required",
+        "Application Team": "Application Team",
+        "Release Mgmt Team": "Release Mgmt Team",
+        "Enterprise Team": "Enterprise Team",
+        "Business Team": "Business Team",
+        "TBD": "TBD",
+        "NON Prod Notification": "NON Prod Notification"
+      }
     },
     {
       "name": "fleetMigrationImpact",
