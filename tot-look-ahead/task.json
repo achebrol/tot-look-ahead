@@ -38,42 +38,7 @@
       "required": false,
       "helpMarkDown": "Cherwell Change # Required"
     },
-    {
-      "name": "status",
-      "type": "pickList",
-      "label": "Status",
-      "defaultValue": "",
-      "required": false,
-      "helpMarkDown": "Status",
-      "options": {
-        "Planned": "Planned",
-        "Scheduled": "Scheduled",
-        "Complete": "Complete",
-        "Cancelled": "Cancelled",
-        "FREEZE": "FREEZE",
-        "FYI": "FYI",
-        "Holiday": "Holiday",
-        "Failed": "Failed",
-        "Postponed": "Postponed",
-        "Tentative": "Tentative"
-      }
-    },
-    {
-      "name": "startDate",
-      "type": "string",
-      "label": "Start Date & Time(CT)",
-      "defaultValue": "",
-      "required": false,
-      "helpMarkDown": "Start Date & Time(CT)"
-    },
-    {
-      "name": "endDate",
-      "type": "string",
-      "label": "End Date & Time(CT)",
-      "defaultValue": "",
-      "required": false,
-      "helpMarkDown": "End Date & Time(CT)"
-    },
+
     {
       "name": "application",
       "type": "string",

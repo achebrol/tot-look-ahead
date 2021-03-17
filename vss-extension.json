@@ -2,7 +2,7 @@
   "manifestVersion": 1,
   "id": "tot-look-ahead-update-task",
   "name": "TOT Look Ahead Update",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "publisher": "AmericanAirlines",
   "targets": [
     {
