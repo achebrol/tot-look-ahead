@@ -1,4 +1,23 @@
 "use strict";
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -35,10 +54,13 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-exports.__esModule = true;
-var tl = require("azure-pipelines-task-lib/task");
-var node_fetch_1 = require("node-fetch");
-var FormData = require("form-data");
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+var tl = __importStar(require("azure-pipelines-task-lib/task"));
+var node_fetch_1 = __importDefault(require("node-fetch"));
+var form_data_1 = __importDefault(require("form-data"));
 var workitem_1 = require("./workitem");
 function run() {
     return __awaiter(this, void 0, void 0, function () {
@@ -78,14 +100,14 @@ function run() {
                     resourceId = '00000003-0000-0ff1-ce00-000000000000';
                     tokenUrl = "https://accounts.accesscontrol.windows.net/" + tenantId + "/tokens/OAuth/2";
                     tokenHeaders = { 'Content-Type': 'application/x-www-form-urlencoded' };
-                    tokenBody = new FormData();
+                    tokenBody = new form_data_1.default();
                     tokenBody.append('grant_type', 'client_credentials');
                     tokenBody.append('client_id', clientId + "@" + tenantId);
                     tokenBody.append('client_secret', clientSecret);
                     tokenBody.append('resource', resourceId + "/" + tenantName + "@" + tenantId);
-                    return [4 /*yield*/, node_fetch_1["default"](tokenUrl, {
+                    return [4 /*yield*/, node_fetch_1.default(tokenUrl, {
                             method: 'POST',
-                            body: tokenBody
+                            body: tokenBody,
                         }).then(function (res) { return res.json(); })];
                 case 2:
                     response = _b.sent();
@@ -93,18 +115,18 @@ function run() {
                     digestTokenHeaders = {
                         Authorization: "Bearer " + access_token,
                         Accept: 'application/json;odata=verbose',
-                        'Content-Type': 'application/json'
+                        'Content-Type': 'application/json',
                     };
-                    return [4 /*yield*/, node_fetch_1["default"](url + "/_api/contextinfo", {
+                    return [4 /*yield*/, node_fetch_1.default(url + "/_api/contextinfo", {
                             method: 'POST',
-                            headers: digestTokenHeaders
+                            headers: digestTokenHeaders,
                         }).then(function (res) { return res.json(); })];
                 case 3:
                     digestResponse = _b.sent();
                     digest = digestResponse.d.GetContextWebInformation.FormDigestValue;
                     lookAheadItemBody = {
                         __metadata: {
-                            type: listNameType
+                            type: listNameType,
                         },
                         Change_x0020__x0023__x0020_Requi: changeNo || 'N/A',
                         Scheduled: status_1 || 'Completed',
@@ -123,27 +145,27 @@ function run() {
                         Comms_x0020_URL_x003a_: {
                             __metadata: { type: 'SP.FieldUrlValue' },
                             Description: commsUrl,
-                            Url: commsText || commsUrl
+                            Url: commsText || commsUrl,
                         },
                         Assigned_x0020_Resource: assignedResource,
                         Additional_x0020_Notes: {
                             __metadata: { type: 'SP.FieldUrlValue' },
                             Description: additionalNotesUrl,
-                            Url: additionalNotesText || additionalNotesUrl
+                            Url: additionalNotesText || additionalNotesUrl,
                         },
-                        Fleet_x0020_Migration_x0020_Cale: false
+                        Fleet_x0020_Migration_x0020_Cale: false,
                     };
                     listUrl = url + "/_api/web/lists/GetByTitle('" + listName + "')/items";
                     lookAheadItemHeaders = {
                         Authorization: "Bearer " + access_token,
                         Accept: 'application/json;odata=verbose',
                         'Content-Type': 'application/json;odata=verbose',
-                        'X-RequestDigest': digest
+                        'X-RequestDigest': digest,
                     };
-                    return [4 /*yield*/, node_fetch_1["default"](listUrl, {
+                    return [4 /*yield*/, node_fetch_1.default(listUrl, {
                             method: 'POST',
                             body: JSON.stringify(lookAheadItemBody),
-                            headers: lookAheadItemHeaders
+                            headers: lookAheadItemHeaders,
                         }).then(function (res) {
                             console.log(res.status);
                             console.log(res.statusText);

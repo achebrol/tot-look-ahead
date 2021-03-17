@@ -1,7 +1,7 @@
 import * as tl from 'azure-pipelines-task-lib/task';
 import fetch from 'node-fetch';
-import FormData = require("form-data");
-import {getWorkItemsforNotes} from './workitem';
+import FormData from 'form-data';
+import { getWorkItemsforNotes } from './workitem';
 async function run() {
   try {
     const url = 'https://spteam.aa.com/sites/MnE/TechOps';
@@ -19,7 +19,8 @@ async function run() {
     const status: string | undefined = tl.getInput('status', true);
     const changeTitle: string | undefined = tl.getInput('changeTitle', true);
     const application: string | undefined = tl.getInput('application', true);
-    const businessDescription: string | undefined = tl.getInput('businessDescription', false) + '\n'+ await getWorkItemsforNotes();
+    const businessDescription: string | undefined =
+      tl.getInput('businessDescription', false) + '\n' + (await getWorkItemsforNotes());
     const technicalDescription: string | undefined = tl.getInput('technicalDescription', false);
     const impact: string | undefined = tl.getInput('impact', true);
     const srManager: string | undefined = tl.getInput('srManager', true);
@@ -120,8 +121,6 @@ async function run() {
     console.log('Successfully added item to TOT LookAhead List');
     console.log('List Item Link:', itemResponse.d.__metadata.uri);
     tl.setVariable('TOT_LookAhead_Item_Link', itemResponse.d.__metadata.uri, false, true);
-
-
   } catch (err) {
     tl.setResult(tl.TaskResult.Failed, err.message);
   }

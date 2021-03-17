@@ -1,4 +1,23 @@
 "use strict";
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -35,19 +54,19 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-exports.__esModule = true;
+Object.defineProperty(exports, "__esModule", { value: true });
 exports.getWorkItemsforNotes = void 0;
-var azdev = require("azure-devops-node-api");
-var tl = require("azure-pipelines-task-lib/task");
+var azdev = __importStar(require("azure-devops-node-api"));
+var tl = __importStar(require("azure-pipelines-task-lib/task"));
 //ADO Connecton Objects
 var webApi;
 var releaseApi;
 var buildApi;
 var workItemApi;
 var build;
-var releaseId = Number(tl.getVariable("Release.ReleaseId"));
-var buildId = Number(tl.getVariable("Build.BuildId"));
-var teamProject = tl.getVariable("System.TeamProject") || '';
+var releaseId = Number(tl.getVariable('Release.ReleaseId'));
+var buildId = Number(tl.getVariable('Build.BuildId'));
+var teamProject = tl.getVariable('System.TeamProject') || '';
 //ADO Connecton Objects
 var endpointUrlDefault = tl.getVariable('System.TeamFoundationCollectionUri') || '';
 var accessTokenDefault = tl.getEndpointAuthorizationParameter('SYSTEMVSSCONNECTION', 'AccessToken', false) || '';
@@ -80,14 +99,12 @@ function getWorkItemsforNotes(endpointUrl, accessToken) {
                             if (f.fields) {
                                 releaseNotes =
                                     releaseNotes +
-                                        "WorkItem Id: " +
-                                        ((_a = f.id) === null || _a === void 0 ? void 0 : _a.toString()) +
-                                        ((f.fields["AAIT.ID"] === undefined) ? "" : " Rally Id: " + f.fields["AAIT.ID"]) +
+                                        'WorkItem Id: ' + ((_a = f.id) === null || _a === void 0 ? void 0 : _a.toString()) +
+                                        (f.fields['AAIT.ID'] === undefined ? '' : ' Rally Id: ' + f.fields['AAIT.ID']) +
                                         '   ' +
-                                        f.fields["System.Title"] +
+                                        f.fields['System.Title'] +
                                         '\n';
                             }
-                            ;
                         });
                     }
                     console.log(releaseNotes);
@@ -107,11 +124,11 @@ function getReleaseApi() {
                     return [4 /*yield*/, webApi.getReleaseApi()];
                 case 1:
                     releaseApi = _a.sent();
-                    tl.debug("Retrieved release work items.");
+                    tl.debug('Retrieved release work items.');
                     return [2 /*return*/, releaseApi];
                 case 2:
                     e_1 = _a.sent();
-                    tl.error("Unable to initialize getReleaseApi");
+                    tl.error('Unable to initialize getReleaseApi');
                     tl.error(e_1.toString());
                     setFailedRelease();
                     return [2 /*return*/, null];
@@ -121,7 +138,7 @@ function getReleaseApi() {
     });
 }
 function setFailedRelease() {
-    tl.setResult(tl.TaskResult.Failed, "Failed", undefined);
+    tl.setResult(tl.TaskResult.Failed, 'Failed', undefined);
 }
 function getBuildApi() {
     return __awaiter(this, void 0, void 0, function () {
@@ -159,11 +176,11 @@ function getBuildWorkItems() {
                     return [4 /*yield*/, buildApi.getBuildWorkItemsRefs(teamProject, build.id || 0)];
                 case 1:
                     buildWorkItemRefs = _a.sent();
-                    tl.debug("Retrieved Build work items.");
+                    tl.debug('Retrieved Build work items.');
                     return [2 /*return*/, buildWorkItemRefs];
                 case 2:
                     e_2 = _a.sent();
-                    tl.error("Unable to retrieve Build Work Items.");
+                    tl.error('Unable to retrieve Build Work Items.');
                     tl.error(e_2.toString());
                     setFailedRelease();
                     return [2 /*return*/, null];
@@ -182,11 +199,11 @@ function getReleaseWorkItems() {
                     return [4 /*yield*/, releaseApi.getReleaseWorkItemsRefs(teamProject, releaseId)];
                 case 1:
                     releaseWorkItemRefs = _a.sent();
-                    tl.debug("Retrieved release work items.");
+                    tl.debug('Retrieved release work items.');
                     return [2 /*return*/, releaseWorkItemRefs];
                 case 2:
                     e_3 = _a.sent();
-                    tl.error("Unable to retrieve Release Work Items.");
+                    tl.error('Unable to retrieve Release Work Items.');
                     tl.error(e_3.toString());
                     setFailedRelease();
                     return [2 /*return*/, null];
@@ -202,16 +219,16 @@ function getWorkItems(workItemIds) {
             switch (_a.label) {
                 case 0:
                     _a.trys.push([0, 2, , 3]);
-                    fieldsOnPrem = ["System.Id", "AAIT.ID", "System.Title", "System.WorkItemType"];
-                    fieldsSaaS = ["System.Id", "AAIT.ID", "System.Title", "System.WorkItemType"];
+                    fieldsOnPrem = ['System.Id', 'AAIT.ID', 'System.Title', 'System.WorkItemType'];
+                    fieldsSaaS = ['System.Id', 'AAIT.ID', 'System.Title', 'System.WorkItemType'];
                     return [4 /*yield*/, workItemApi.getWorkItems(workItemIds, fieldsOnPrem)];
                 case 1:
                     workItems = _a.sent();
-                    tl.debug("Retrieved work items.");
+                    tl.debug('Retrieved work items.');
                     return [2 /*return*/, workItems];
                 case 2:
                     e_4 = _a.sent();
-                    tl.error("Unable to retrieve Work Items.");
+                    tl.error('Unable to retrieve Work Items.');
                     tl.error(e_4.toString());
                     setFailedRelease();
                     return [2 /*return*/, null];
@@ -228,14 +245,17 @@ function getWorkItemsForReleaseNotes() {
                 case 0:
                     workItemIds = new Array();
                     returnValue = [];
-                    if (releaseId !== undefined && releaseId !== null && releaseId > 0)
+                    if (releaseId !== undefined && releaseId !== null && releaseId > 0) {
                         isRelease = true;
+                    }
                     if (!isRelease) return [3 /*break*/, 2];
                     return [4 /*yield*/, getReleaseWorkItems()];
                 case 1:
                     releaseWorkItems = (_a.sent()) || [];
                     if (releaseWorkItems !== null && releaseWorkItems !== undefined && releaseWorkItems.length > 0) {
-                        releaseWorkItems.forEach(function (fe) { return workItemIds.indexOf(Number(fe.id)) === -1 ? workItemIds.push(Number(fe.id)) : null; });
+                        releaseWorkItems.forEach(function (fe) {
+                            return workItemIds.indexOf(Number(fe.id)) === -1 ? workItemIds.push(Number(fe.id)) : null;
+                        });
                     }
                     _a.label = 2;
                 case 2:
@@ -250,13 +270,17 @@ function getWorkItemsForReleaseNotes() {
                 case 5:
                     buildWorkItems = _a.sent();
                     if (buildWorkItems !== null && buildWorkItems !== undefined && buildWorkItems.length > 0) {
-                        buildWorkItems.forEach(function (fe) { return workItemIds.indexOf(Number(fe.id)) === -1 ? workItemIds.push(Number(fe.id)) : null; });
+                        buildWorkItems.forEach(function (fe) {
+                            return workItemIds.indexOf(Number(fe.id)) === -1 ? workItemIds.push(Number(fe.id)) : null;
+                        });
                     }
                     return [4 /*yield*/, getBuildCommitWorkItems([build.sourceVersion || ''])];
                 case 6:
                     buildCommitWorkItems = _a.sent();
                     if (buildCommitWorkItems !== null && buildCommitWorkItems !== undefined && buildCommitWorkItems.length > 0) {
-                        buildCommitWorkItems.forEach(function (fe) { return workItemIds.indexOf(Number(fe.id)) === -1 ? workItemIds.push(Number(fe.id)) : null; });
+                        buildCommitWorkItems.forEach(function (fe) {
+                            return workItemIds.indexOf(Number(fe.id)) === -1 ? workItemIds.push(Number(fe.id)) : null;
+                        });
                     }
                     if (!(workItemIds !== null && workItemIds !== undefined && workItemIds.length > 0)) return [3 /*break*/, 8];
                     return [4 /*yield*/, getWorkItems(workItemIds)];
@@ -279,14 +303,14 @@ function getBuild() {
                     return [4 /*yield*/, buildApi.getBuild(teamProject, buildId)];
                 case 1:
                     returnedBuild = _a.sent();
-                    tl.debug("Retrieved Build.");
+                    tl.debug('Retrieved Build.');
                     return [2 /*return*/, returnedBuild];
                 case 2:
                     e_5 = _a.sent();
-                    tl.error("Unable to retrieve Build.");
+                    tl.error('Unable to retrieve Build.');
                     tl.error(e_5.toString());
                     setFailedRelease();
-                    return [2 /*return*/, null];
+                    throw e_5;
                 case 3: return [2 /*return*/];
             }
         });
@@ -302,11 +326,11 @@ function getBuildCommitWorkItems(commitIds) {
                     return [4 /*yield*/, buildApi.getBuildWorkItemsRefsFromCommits(commitIds, teamProject, buildId)];
                 case 1:
                     buildWorkItemRefs = _a.sent();
-                    tl.debug("Retrieved Build Commit work items.");
+                    tl.debug('Retrieved Build Commit work items.');
                     return [2 /*return*/, buildWorkItemRefs];
                 case 2:
                     e_6 = _a.sent();
-                    tl.error("Unable to retrieve Build Commit Work Items.");
+                    tl.error('Unable to retrieve Build Commit Work Items.');
                     tl.error(e_6.toString());
                     setFailedRelease();
                     return [2 /*return*/, null];
