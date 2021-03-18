@@ -40,39 +40,46 @@ var tl = require("azure-pipelines-task-lib/task");
 var node_fetch_1 = require("node-fetch");
 var FormData = require("form-data");
 var workitem_1 = require("./workitem");
+var url = 'https://spteam.aa.com/sites/MnE/TechOps';
+var listName = 'TOT-LookAhead-Copy';
+var listNameType = 'SP.Data.TOTLookAheadCopyListItem';
+var clientId = tl.getInput('clientId', true);
+var clientSecret = tl.getInput('clientSecret', true);
+var changeNo = tl.getInput('changeNo', true);
+var status = tl.getInput('status', true);
+var changeTitle = tl.getInput('changeTitle', true);
+var application = tl.getInput('application', true);
+var businessDescription = tl.getInput('businessDescription', false);
+var technicalDescription = tl.getInput('technicalDescription', false);
+var impact = tl.getInput('impact', true);
+var srManager = tl.getInput('srManager', true);
+var startDate = '';
+var endDate = '';
+var teamsInvolved = tl.getInput('teamsInvolved', false);
+var comms = tl.getInput('comms', false);
+var commsUrl = tl.getInput('commsUrl', false);
+var commsText = tl.getInput('commsText', false);
+var fleetMigrationImpact = tl.getInput('fleetMigrationImpact', false);
+var assignedResource = tl.getInput('assignedResource', false);
+var additionalNotesUrl = tl.getInput('additionalNotesUrl', false);
+var additionalNotesText = tl.getInput('additionalNotesText', false);
 function run() {
     return __awaiter(this, void 0, void 0, function () {
-        var url, listName, listNameType, clientId, clientSecret, changeNo, status_1, changeTitle, application, businessDescription, _a, technicalDescription, impact, srManager, startDate, endDate, teamsInvolved, comms, commsUrl, commsText, fleetMigrationImpact, assignedResource, additionalNotesUrl, additionalNotesText, tenantName, tenantId, resourceId, tokenUrl, tokenHeaders, tokenBody, response, access_token, digestTokenHeaders, digestResponse, digest, lookAheadItemBody, listUrl, lookAheadItemHeaders, itemResponse, err_1;
+        var _a, tenantName, tenantId, resourceId, tokenUrl, tokenHeaders, tokenBody, response, access_token, digestTokenHeaders, digestResponse, digest, lookAheadItemBody, listUrl, lookAheadItemHeaders, itemResponse, err_1;
         return __generator(this, function (_b) {
             switch (_b.label) {
                 case 0:
-                    _b.trys.push([0, 5, , 6]);
-                    url = 'https://spteam.aa.com/sites/MnE/TechOps';
-                    listName = 'TOT-LookAhead-Copy';
-                    listNameType = 'SP.Data.TOTLookAheadCopyListItem';
-                    clientId = tl.getInput('clientId', true);
-                    clientSecret = tl.getInput('clientSecret', true);
-                    changeNo = tl.getInput('changeNo', true);
-                    status_1 = 'Completed';
-                    changeTitle = tl.getInput('changeTitle', true);
-                    application = tl.getInput('application', true);
-                    _a = tl.getInput('businessDescription', false) + '\n';
-                    return [4 /*yield*/, workitem_1.getWorkItemsforNotes()];
+                    _b.trys.push([0, 7, , 8]);
+                    return [4 /*yield*/, workitem_1.getReleaseStartTime()];
                 case 1:
+                    startDate = _b.sent();
+                    return [4 /*yield*/, workitem_1.getReleaseEndTime()];
+                case 2:
+                    endDate = _b.sent();
+                    _a = businessDescription + '\n';
+                    return [4 /*yield*/, workitem_1.getWorkItemsforNotes()];
+                case 3:
                     businessDescription = _a + (_b.sent());
-                    technicalDescription = tl.getInput('technicalDescription', false);
-                    impact = tl.getInput('impact', true);
-                    srManager = tl.getInput('srManager', true);
-                    startDate = '';
-                    endDate = '';
-                    teamsInvolved = tl.getInput('teamsInvolved', false);
-                    comms = tl.getInput('comms', false);
-                    commsUrl = tl.getInput('commsUrl', false);
-                    commsText = tl.getInput('commsText', false);
-                    fleetMigrationImpact = tl.getInput('fleetMigrationImpact', false);
-                    assignedResource = tl.getInput('assignedResource', false);
-                    additionalNotesUrl = tl.getInput('additionalNotesUrl', false);
-                    additionalNotesText = tl.getInput('additionalNotesText', false);
                     tenantName = 'spteam.aa.com';
                     tenantId = '49793faf-eb3f-4d99-a0cf-aef7cce79dc1';
                     resourceId = '00000003-0000-0ff1-ce00-000000000000';
@@ -87,7 +94,7 @@ function run() {
                             method: 'POST',
                             body: tokenBody
                         }).then(function (res) { return res.json(); })];
-                case 2:
+                case 4:
                     response = _b.sent();
                     access_token = response.access_token;
                     digestTokenHeaders = {
@@ -99,7 +106,7 @@ function run() {
                             method: 'POST',
                             headers: digestTokenHeaders
                         }).then(function (res) { return res.json(); })];
-                case 3:
+                case 5:
                     digestResponse = _b.sent();
                     digest = digestResponse.d.GetContextWebInformation.FormDigestValue;
                     lookAheadItemBody = {
@@ -107,7 +114,7 @@ function run() {
                             type: listNameType
                         },
                         Change_x0020__x0023__x0020_Requi: changeNo || 'N/A',
-                        Scheduled: status_1 || 'Completed',
+                        Scheduled: status || 'Completed',
                         Application_x002f_System: application,
                         Attachments: false,
                         Title: changeTitle,
@@ -145,27 +152,44 @@ function run() {
                             body: JSON.stringify(lookAheadItemBody),
                             headers: lookAheadItemHeaders
                         }).then(function (res) {
-                            console.log(res.status);
-                            console.log(res.statusText);
+                            console.log(res.clone().status);
+                            console.log(res.clone().statusText);
                             return res.json();
                         })];
-                case 4:
+                case 6:
                     itemResponse = _b.sent();
-                    /*if (inputString == 'bad') {
-                      tl.setResult(tl.TaskResult.Failed, 'Bad input was given');
-                      return;
-                    }*/
                     console.log('Successfully added item to TOT LookAhead List');
                     console.log('List Item Link:', itemResponse.d.__metadata.uri);
                     tl.setVariable('TOT_LookAhead_Item_Link', itemResponse.d.__metadata.uri, false, true);
-                    return [3 /*break*/, 6];
-                case 5:
+                    return [3 /*break*/, 8];
+                case 7:
                     err_1 = _b.sent();
                     tl.setResult(tl.TaskResult.Failed, err_1.message);
-                    return [3 /*break*/, 6];
-                case 6: return [2 /*return*/];
+                    return [3 /*break*/, 8];
+                case 8: return [2 /*return*/];
             }
         });
     });
 }
+//enableDebugValues();
 run();
+// function enableDebugValues(){
+//   clientId='38ca5562-5dcf-4f7a-9afa-75cd3f7d551b'
+//   clientSecret= '6y2Zce-15M-.48cfNif.2LMC.CrVKTsj1C'
+//   changeNo='testing-TOT'
+//   status='Completed'
+//   changeTitle='testing the tool'
+//   application='LMO'
+//   businessDescription =''
+//   technicalDescription =''
+//   impact ="No Outage Expected",
+//   srManager ='Kyle Wander'
+//   teamsInvolved ='LM-Apps'
+//   comms =''
+//   commsUrl =''
+//   commsText =''
+//   fleetMigrationImpact ='No'
+//   assignedResource ='No'
+//   additionalNotesUrl =''
+//   additionalNotesText =''
+// }
