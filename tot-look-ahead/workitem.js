@@ -56,6 +56,15 @@ var collectionUri = '';
 //ADO Connecton Objects
 var endpointUrlDefault = tl.getVariable('System.TeamFoundationCollectionUri') || '';
 var accessTokenDefault = tl.getEndpointAuthorizationParameter('SYSTEMVSSCONNECTION', 'AccessToken', false) || '';
+// //debug
+// endpointUrlDefault ='https://azuredevops.aa.com/USAIT/';
+// accessTokenDefault ="mhuanek6d7xj5prvshjqc7vujlywqzyquhtx2bkbtr6jkwxe34wa";
+// releaseId = 137672;
+// buildId = 700605
+// teamProject = 'TechOpsR';
+//  environmentId =698075
+//  deploymentId =180041
+//  phaseId = 176215
 function getWorkItemsforNotes(endpointUrl, accessToken) {
     if (endpointUrl === void 0) { endpointUrl = endpointUrlDefault; }
     if (accessToken === void 0) { accessToken = accessTokenDefault; }
@@ -428,16 +437,20 @@ function getReleaseStartTime(endpointUrl, accessToken) {
     });
 }
 exports.getReleaseStartTime = getReleaseStartTime;
-// //Debugging the code for testing.
-// let azdoToken = "mhuanek6d7xj5prvshjqc7vujlywqzyquhtx2bkbtr6jkwxe34wa";
-//  collectionUri = 'https://azuredevops.aa.com/USAIT/';
-// //const credentialHandler: IRequestHandler = azdev.getHandlerFromToken(azdoToken);
+// function setdebugVariable(){
+// // let azdoToken = "mhuanek6d7xj5prvshjqc7vujlywqzyquhtx2bkbtr6jkwxe34wa";
+// //  collectionUri = 'https://azuredevops.aa.com/USAIT/';
+// // //const credentialHandler: IRequestHandler = azdev.getHandlerFromToken(azdoToken);
+// endpointUrlDefault ='https://azuredevops.aa.com/USAIT/';
+// accessTokenDefault ="mhuanek6d7xj5prvshjqc7vujlywqzyquhtx2bkbtr6jkwxe34wa";
 // releaseId = 137672;
 // buildId = 700605
 // teamProject = 'TechOpsR';
 //  environmentId =698075
 //  deploymentId =180041
 //  phaseId = 176215
+// }
+// //Debugging the code for testing.
 // let result= getWorkItemsforNotes(collectionUri,azdoToken);
 // console.log(result);
 //  //let result= await getReleaseStartTime(collectionUri,azdoToken);

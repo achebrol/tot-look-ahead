@@ -38,7 +38,14 @@
       "required": false,
       "helpMarkDown": "Cherwell Change # Required"
     },
-
+    {
+      "name": "status",
+      "type": "string",
+      "label": "Status",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Status"
+     },
     {
       "name": "application",
       "type": "string",
