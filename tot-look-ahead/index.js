@@ -72,10 +72,10 @@ function run() {
                     _b.trys.push([0, 7, , 8]);
                     return [4 /*yield*/, workitem_1.getReleaseStartTime()];
                 case 1:
-                    startDate = _b.sent();
+                    startDate = (_b.sent()) || (new Date).toLocaleString();
                     return [4 /*yield*/, workitem_1.getReleaseEndTime()];
                 case 2:
-                    endDate = _b.sent();
+                    endDate = (_b.sent()) || (new Date).toLocaleString();
                     _a = businessDescription + '\n';
                     return [4 /*yield*/, workitem_1.getWorkItemsforNotes()];
                 case 3:

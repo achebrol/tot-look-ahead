@@ -31,8 +31,8 @@ import {getWorkItemsforNotes, getReleaseEndTime , getReleaseStartTime} from './w
 async function run() {
   try {
     
-    startDate =await getReleaseStartTime();
-    endDate = await getReleaseEndTime();
+    startDate =await getReleaseStartTime() || (new Date).toLocaleString()
+    endDate = await getReleaseEndTime() || (new Date).toLocaleString()
     businessDescription =businessDescription+ '\n' + (await getWorkItemsforNotes());
 
     const tenantName = 'spteam.aa.com';

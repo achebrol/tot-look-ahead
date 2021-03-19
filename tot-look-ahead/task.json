@@ -153,14 +153,6 @@
       "helpMarkDown": "Fleet Migration Impact"
     },
     {
-      "name": "fleetMigrationImpact",
-      "type": "multiLine",
-      "label": "Fleet Migration Impact",
-      "defaultValue": "No",
-      "required": false,
-      "helpMarkDown": "Fleet Migration Impact"
-    },
-    {
       "name": "commsUrl",
       "type": "string",
       "label": "Comms URL",
