@@ -38,7 +38,14 @@
       "required": false,
       "helpMarkDown": "Cherwell Change # Required"
     },
-
+    {
+      "name": "status",
+      "type": "string",
+      "label": "Status",
+      "defaultValue": "",
+      "required": false,
+      "helpMarkDown": "Status"
+     },
     {
       "name": "application",
       "type": "string",
@@ -136,14 +143,6 @@
         "TBD": "TBD",
         "NON Prod Notification": "NON Prod Notification"
       }
-    },
-    {
-      "name": "fleetMigrationImpact",
-      "type": "multiLine",
-      "label": "Fleet Migration Impact",
-      "defaultValue": "No",
-      "required": false,
-      "helpMarkDown": "Fleet Migration Impact"
     },
     {
       "name": "fleetMigrationImpact",
