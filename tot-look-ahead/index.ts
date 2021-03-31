@@ -34,7 +34,7 @@ async function run() {
     startDate =await getReleaseStartTime() || (new Date).toLocaleString()
     endDate = await getReleaseEndTime() || (new Date).toLocaleString()
     businessDescription =businessDescription+ '\n' + (await getWorkItemsforNotes());
-
+    status = status == "Succeeded" ? "Completed" : status;
     const tenantName = 'spteam.aa.com';
     const tenantId = '49793faf-eb3f-4d99-a0cf-aef7cce79dc1';
     const resourceId = '00000003-0000-0ff1-ce00-000000000000';
