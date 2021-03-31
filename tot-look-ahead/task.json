@@ -180,7 +180,7 @@
       "name": "additionalNotesUrl",
       "type": "string",
       "label": "Additional Notes Url",
-      "defaultValue": "No",
+      "defaultValue": "",
       "required": false,
       "helpMarkDown": "additionalNotesUrl"
     },
