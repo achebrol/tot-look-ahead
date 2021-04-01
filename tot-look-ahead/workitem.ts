@@ -22,7 +22,8 @@ let teamProject = tl.getVariable("System.TeamProject")||'';
 let environmentId:number = Number(tl.getVariable("Release.EnvironmentId"));
 let deploymentId: number = Number(tl.getVariable("Release.DeploymentID"));
  let phaseId:number = Number(tl.getVariable("Release.DeployPhaseID"));
-let collectionUri=''; 
+let collectionUri='';
+let startTime : Date = new Date(tl.getVariable("Release.Deployment.StartTime")|| new Date()); 
 
 //ADO Connecton Objects
 let endpointUrlDefault: string = tl.getVariable('System.TeamFoundationCollectionUri')||'';
@@ -252,10 +253,10 @@ async function getReleaseEndTime(endpointUrl : string  = endpointUrlDefault,acce
 
                     if (task?.name?.indexOf('Cherwell') === 0) {
                         try {
-                            endDate = taskGroup?.dateStarted?.toLocaleString()||'';
+                            endDate = taskGroup?.dateStarted?.toLocaleString("en-US", { timeZone: "America/Chicago" })||'';
                         }
                         catch (e) {
-                            endDate = new Date().toLocaleString();
+                            endDate = new Date().toLocaleString("en-US", { timeZone: "America/Chicago" });
                         }
 
                     }
@@ -280,22 +281,8 @@ async function getRelease() {
 }
 
 async function getReleaseStartTime (endpointUrl : string  = endpointUrlDefault,accessToken: string=accessTokenDefault ) {   
-        const credentialHandler: IRequestHandler = azdev.getHandlerFromToken(accessToken);
-        webApi = new azdev.WebApi(endpointUrl, credentialHandler);
-        releaseApi = await getReleaseApi();
-
-    
-    let release = await getRelease();    
-     if(release){
-     
-     return release?.environments?.find(w => w.id == environmentId)?.deploySteps
-         ?.find(f => f.deploymentId === deploymentId)?.releaseDeployPhases?.find(g => g.phaseId == phaseId.toString())?.startedOn?.toLocaleString();
-     }
-
-    
-     return null;
+    return startTime.toLocaleString("en-US", { timeZone: "America/Chicago" });
 }
-
 export {getWorkItemsforNotes, getReleaseEndTime , getReleaseStartTime};
 
 // function setdebugVariable(){
