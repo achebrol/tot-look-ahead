@@ -1,39 +1,38 @@
 import * as tl from 'azure-pipelines-task-lib/task';
 import fetch from 'node-fetch';
-import FormData = require("form-data");
-import {getWorkItemsforNotes, getReleaseEndTime , getReleaseStartTime} from './workitem';
+const httpsProxyAgent = require('https-proxy-agent');
+import FormData = require('form-data');
+import { getWorkItemsforNotes, getReleaseEndTime, getReleaseStartTime } from './workitem';
 
-    const url = 'https://spteam.aa.com/sites/MnE/TechOps';
-    const listName = 'TOT-LookAhead-Copy';
-    const listNameType = 'SP.Data.TOTLookAheadCopyListItem';
-    let clientId: string | undefined = tl.getInput('clientId', true);    
-    let clientSecret: string | undefined = tl.getInput('clientSecret', true);
-    let changeNo: string | undefined = tl.getInput('changeNo', true);
-    let status: string | undefined = tl.getInput('status', true);
-    let changeTitle: string | undefined =  tl.getInput('changeTitle', true);
-    let application: string | undefined = tl.getInput('application', true);
-    let businessDescription: string | undefined = tl.getInput('businessDescription', false) 
-    let technicalDescription: string | undefined = tl.getInput('technicalDescription', false);
-    let impact: string | undefined = tl.getInput('impact', true);
-    let srManager: string | undefined = tl.getInput('srManager', true);
-    let startDate: string | undefined|null = ''; 
-    let endDate: string | undefined|null = ''; 
-    let teamsInvolved: string | undefined = tl.getInput('teamsInvolved', false);
-    let comms: string | undefined = tl.getInput('comms', false);
-    let commsUrl: string | undefined = tl.getInput('commsUrl', false);
-    let commsText: string | undefined = tl.getInput('commsText', false);
-    let fleetMigrationImpact: string | undefined = tl.getInput('fleetMigrationImpact', false);
-    let assignedResource: string | undefined = tl.getInput('assignedResource', false);
-    let additionalNotesUrl: string | undefined = tl.getInput('additionalNotesUrl', false);
-    let additionalNotesText: string | undefined = tl.getInput('additionalNotesText', false);
-
+const url = 'https://spteam.aa.com/sites/MnE/TechOps';
+const listName = 'TOT-LookAhead-Copy';
+const listNameType = 'SP.Data.TOTLookAheadCopyListItem';
+let clientId: string | undefined = tl.getInput('clientId', true);
+let clientSecret: string | undefined = tl.getInput('clientSecret', true);
+let changeNo: string | undefined = tl.getInput('changeNo', true);
+let status: string | undefined = tl.getInput('status', true);
+let changeTitle: string | undefined = tl.getInput('changeTitle', true);
+let application: string | undefined = tl.getInput('application', true);
+let businessDescription: string | undefined = tl.getInput('businessDescription', false);
+let technicalDescription: string | undefined = tl.getInput('technicalDescription', false);
+let impact: string | undefined = tl.getInput('impact', true);
+let srManager: string | undefined = tl.getInput('srManager', true);
+let startDate: string | undefined | null = '';
+let endDate: string | undefined | null = '';
+let teamsInvolved: string | undefined = tl.getInput('teamsInvolved', false);
+let comms: string | undefined = tl.getInput('comms', false);
+let commsUrl: string | undefined = tl.getInput('commsUrl', false);
+let commsText: string | undefined = tl.getInput('commsText', false);
+let fleetMigrationImpact: string | undefined = tl.getInput('fleetMigrationImpact', false);
+let assignedResource: string | undefined = tl.getInput('assignedResource', false);
+let additionalNotesUrl: string | undefined = tl.getInput('additionalNotesUrl', false);
+let additionalNotesText: string | undefined = tl.getInput('additionalNotesText', false);
 
 async function run() {
   try {
-    
-    startDate =await getReleaseStartTime() || (new Date).toLocaleString()
-    endDate = await getReleaseEndTime() || (new Date).toLocaleString()
-    businessDescription =businessDescription+ '\n' + (await getWorkItemsforNotes());
+    startDate = (await getReleaseStartTime()) || new Date().toLocaleString();
+    endDate = (await getReleaseEndTime()) || new Date().toLocaleString();
+    businessDescription = businessDescription + '\n' + (await getWorkItemsforNotes());
 
     const tenantName = 'spteam.aa.com';
     const tenantId = '49793faf-eb3f-4d99-a0cf-aef7cce79dc1';
@@ -45,10 +44,11 @@ async function run() {
     tokenBody.append('client_id', `${clientId}@${tenantId}`);
     tokenBody.append('client_secret', clientSecret);
     tokenBody.append('resource', `${resourceId}/${tenantName}@${tenantId}`);
-
+    const agent = new httpsProxyAgent('http://inetgw.aa.com:9093');
     //1. Get Access Token
     const response = await fetch(tokenUrl, {
       method: 'POST',
+      agent: agent,
       body: tokenBody,
     }).then((res) => res.json());
     const access_token = response.access_token;
@@ -95,8 +95,8 @@ async function run() {
         Description: additionalNotesUrl,
         Url: additionalNotesText || additionalNotesUrl,
       },
-       Fleet_x0020_Migration_x0020_Cale: false,
-     };
+      Fleet_x0020_Migration_x0020_Cale: false,
+    };
     const listUrl = `${url}/_api/web/lists/GetByTitle('${listName}')/items`;
     const lookAheadItemHeaders = {
       Authorization: `Bearer ${access_token}`,
@@ -104,17 +104,17 @@ async function run() {
       'Content-Type': 'application/json;odata=verbose',
 
       'X-RequestDigest': digest,
-    };    
+    };
     const itemResponse = await fetch(listUrl, {
       method: 'POST',
       body: JSON.stringify(lookAheadItemBody),
       headers: lookAheadItemHeaders,
     }).then((res) => {
       console.log(res.clone().status);
-      console.log(res.clone().statusText);       
+      console.log(res.clone().statusText);
       return res.json();
     });
-    
+
     console.log('Successfully added item to TOT LookAhead List');
     console.log('List Item Link:', itemResponse.d.__metadata.uri);
     tl.setVariable('TOT_LookAhead_Item_Link', itemResponse.d.__metadata.uri, false, true);
