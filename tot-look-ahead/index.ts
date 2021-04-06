@@ -4,7 +4,7 @@ import FormData = require("form-data");
 import {getWorkItemsforNotes, getReleaseEndTime , getReleaseStartTime} from './workitem';
 
     const url = 'https://spteam.aa.com/sites/MnE/TechOps';
-    const listName = 'TOT-LookAhead-Copy';
+    const listName = 'TOT-LookAhead';
     const listNameType = 'SP.Data.TOTLookAheadCopyListItem';
     let clientId: string | undefined = tl.getInput('clientId', true);    
     let clientSecret: string | undefined = tl.getInput('clientSecret', true);
@@ -33,7 +33,7 @@ async function run() {
     
     startDate =await getReleaseStartTime() || (new Date).toLocaleString()
     endDate = await getReleaseEndTime() || (new Date).toLocaleString()
-    businessDescription =businessDescription+ '\n' + (await getWorkItemsforNotes());
+    businessDescription =(businessDescription||'')+ '\n' + (await getWorkItemsforNotes());
     status = status == "Succeeded" ? "Complete" : status;
     const tenantName = 'spteam.aa.com';
     const tenantId = '49793faf-eb3f-4d99-a0cf-aef7cce79dc1';

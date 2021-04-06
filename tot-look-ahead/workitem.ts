@@ -23,8 +23,6 @@ let environmentId:number = Number(tl.getVariable("Release.EnvironmentId"));
 let deploymentId: number = Number(tl.getVariable("Release.DeploymentID"));
  let phaseId:number = Number(tl.getVariable("Release.DeployPhaseID"));
 let collectionUri='';
-let startTime : Date = new Date(tl.getVariable("Release.Deployment.StartTime")|| new Date()); 
-
 //ADO Connecton Objects
 let endpointUrlDefault: string = tl.getVariable('System.TeamFoundationCollectionUri')||'';
 let accessTokenDefault: string = tl.getEndpointAuthorizationParameter('SYSTEMVSSCONNECTION', 'AccessToken', false)||'';
@@ -281,9 +279,24 @@ async function getRelease() {
 }
 
 async function getReleaseStartTime (endpointUrl : string  = endpointUrlDefault,accessToken: string=accessTokenDefault ) {   
-    return startTime.toLocaleString("en-US", { timeZone: "America/Chicago" });
+  const credentialHandler: IRequestHandler = azdev.getHandlerFromToken(accessToken);
+  webApi = new azdev.WebApi(endpointUrl, credentialHandler);
+  releaseApi = await getReleaseApi();
+
+
+let release = await getRelease();    
+if(release){
+
+return release?.environments?.find(w => w.id == environmentId)?.deploySteps
+   ?.find(f => f.deploymentId === deploymentId)?.releaseDeployPhases?.find(g => g.phaseId == phaseId.toString())?.startedOn?.toLocaleString("en-US", { timeZone: "America/Chicago" });
+
+   return  (new Date).toLocaleString("en-US", { timeZone: "America/Chicago" });
 }
+
+}
+
 export {getWorkItemsforNotes, getReleaseEndTime , getReleaseStartTime};
+
 
 // function setdebugVariable(){
 
