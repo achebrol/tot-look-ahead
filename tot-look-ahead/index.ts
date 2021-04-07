@@ -3,9 +3,11 @@ import fetch from 'node-fetch';
 import FormData = require("form-data");
 import {getWorkItemsforNotes, getReleaseEndTime , getReleaseStartTime} from './workitem';
 
+const httpsProxyAgent = require('https-proxy-agent');
+
     const url = 'https://spteam.aa.com/sites/MnE/TechOps';
     const listName = 'TOT-LookAhead';
-    const listNameType = 'SP.Data.TOTLookAheadCopyListItem';
+    const listNameType = 'SP.Data.TOTLookAheadListItem';
     let clientId: string | undefined = tl.getInput('clientId', true);    
     let clientSecret: string | undefined = tl.getInput('clientSecret', true);
     let changeNo: string | undefined = tl.getInput('changeNo', true);
@@ -26,6 +28,7 @@ import {getWorkItemsforNotes, getReleaseEndTime , getReleaseStartTime} from './w
     let assignedResource: string | undefined = tl.getInput('assignedResource', false);
     let additionalNotesUrl: string | undefined = tl.getInput('additionalNotesUrl', false);
     let additionalNotesText: string | undefined = tl.getInput('additionalNotesText', false);
+    let proxyUrl: string | undefined = tl.getInput('proxyUrl', false);
 
 
 async function run() {
@@ -45,12 +48,24 @@ async function run() {
     tokenBody.append('client_id', `${clientId}@${tenantId}`);
     tokenBody.append('client_secret', clientSecret);
     tokenBody.append('resource', `${resourceId}/${tenantName}@${tenantId}`);
-
+ ;
     //1. Get Access Token
-    const response = await fetch(tokenUrl, {
+    let response:any=''
+    if  (proxyUrl){
+     const agent = new httpsProxyAgent(proxyUrl)
+      console.log('proxyUrl' +proxyUrl)
+     response = await fetch(tokenUrl, {
       method: 'POST',
+      agent: agent,
       body: tokenBody,
     }).then((res) => res.json());
+  } else {
+    console.log('non proxyUrl')
+    response = await fetch(tokenUrl, {
+      method: 'POST',      
+      body: tokenBody,
+    }).then((res) => res.json());
+  }
     const access_token = response.access_token;
     //console.log('Access Token:', response);
     //2. Get Digest
@@ -65,7 +80,7 @@ async function run() {
     }).then((res) => res.json());
     //console.log('digestResponse', digestResponse);
     const digest = digestResponse.d.GetContextWebInformation.FormDigestValue;
-    //3.Create TOT LookAhead Item
+    //3.Create TOT LookAhead Item    
     const lookAheadItemBody = {
       __metadata: {
         type: listNameType,
@@ -95,7 +110,7 @@ async function run() {
         Description: additionalNotesUrl,
         Url: additionalNotesText || additionalNotesUrl,
       },
-       Fleet_x0020_Migration_x0020_Cale: false,
+      Fleet_x0020_Migration_x0020_Cale: false,
      };
     const listUrl = `${url}/_api/web/lists/GetByTitle('${listName}')/items`;
     const lookAheadItemHeaders = {
@@ -111,7 +126,7 @@ async function run() {
       headers: lookAheadItemHeaders,
     }).then((res) => {
       console.log(res.clone().status);
-      console.log(res.clone().statusText);       
+      console.log(res.clone().statusText);        
       return res.json();
     });
     
