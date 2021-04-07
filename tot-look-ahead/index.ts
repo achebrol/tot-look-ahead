@@ -1,9 +1,9 @@
 import * as tl from 'azure-pipelines-task-lib/task';
 import fetch from 'node-fetch';
-import FormData = require("form-data");
-import {getWorkItemsforNotes, getReleaseEndTime , getReleaseStartTime} from './workitem';
+import FormData = require('form-data');
+import { getWorkItemsforNotes, getReleaseEndTime, getReleaseStartTime } from './workitem';
 
-const httpsProxyAgent = require('https-proxy-agent');
+import httpsProxyAgent from 'https-proxy-agent';
 
     const url = 'https://spteam.aa.com/sites/MnE/TechOps';
     const listName = 'TOT-LookAhead';
@@ -52,7 +52,7 @@ async function run() {
     //1. Get Access Token
     let response:any=''
     if  (proxyUrl){
-     const agent = new httpsProxyAgent(proxyUrl)
+     const agent =  httpsProxyAgent(proxyUrl)
       console.log('proxyUrl' +proxyUrl)
      response = await fetch(tokenUrl, {
       method: 'POST',
