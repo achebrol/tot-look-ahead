@@ -8,16 +8,16 @@ const httpsProxyAgent = require('https-proxy-agent');
     const url = 'https://spteam.aa.com/sites/MnE/TechOps';
     const listName = 'TOT-LookAhead';
     const listNameType = 'SP.Data.TOTLookAheadListItem';
-    let clientId: string | undefined = tl.getInput('clientId', true);    
-    let clientSecret: string | undefined = tl.getInput('clientSecret', true);
-    let changeNo: string | undefined = tl.getInput('changeNo', true);
-    let status: string | undefined = tl.getInput('status', true);
-    let changeTitle: string | undefined =  tl.getInput('changeTitle', true);
-    let application: string | undefined = tl.getInput('application', true);
+    let clientId: string | undefined = tl.getInput('clientId', false);    
+    let clientSecret: string | undefined = tl.getInput('clientSecret', false);
+    let changeNo: string | undefined = tl.getInput('changeNo', false);
+    let status: string | undefined = tl.getInput('status', false);
+    let changeTitle: string | undefined =  tl.getInput('changeTitle', false);
+    let application: string | undefined = tl.getInput('application', false);
     let businessDescription: string | undefined = tl.getInput('businessDescription', false) 
     let technicalDescription: string | undefined = tl.getInput('technicalDescription', false);
-    let impact: string | undefined = tl.getInput('impact', true);
-    let srManager: string | undefined = tl.getInput('srManager', true);
+    let impact: string | undefined = tl.getInput('impact', false);
+    let srManager: string | undefined = tl.getInput('srManager', false);
     let startDate: string | undefined|null = ''; 
     let endDate: string | undefined|null = ''; 
     let teamsInvolved: string | undefined = tl.getInput('teamsInvolved', false);
@@ -34,9 +34,9 @@ const httpsProxyAgent = require('https-proxy-agent');
 async function run() {
   try {
     
-    startDate =await getReleaseStartTime() || (new Date).toLocaleString()
-    endDate = await getReleaseEndTime() || (new Date).toLocaleString()
-    businessDescription =(businessDescription||'')+ '\n' + (await getWorkItemsforNotes());
+    startDate ='2021-03-03T21:21:54Z'//await getReleaseStartTime() || (new Date).toLocaleString()
+    endDate = '2021-03-04T21:21:54Z'//await getReleaseEndTime() || (new Date).toLocaleString()
+    businessDescription =(businessDescription||'')+ '\n'// + (await getWorkItemsforNotes());
     status = status == "Succeeded" ? "Complete" : status;
     const tenantName = 'spteam.aa.com';
     const tenantId = '49793faf-eb3f-4d99-a0cf-aef7cce79dc1';
@@ -137,27 +137,28 @@ async function run() {
     tl.setResult(tl.TaskResult.Failed, err.message);
   }
 }
-//enableDebugValues();
+enableDebugValues();
 run();
 
-// function enableDebugValues(){
-//   clientId='38ca5562-5dcf-4f7a-9afa-75cd3f7d551b'
-//   clientSecret= '6y2Zce-15M-.48cfNif.2LMC.CrVKTsj1C'
-//   changeNo='testing-TOT'
-//   status='Completed'
-//   changeTitle='testing the tool'
-//   application='LMO'
-//   businessDescription =''
-//   technicalDescription =''
-//   impact ="No Outage Expected",
-//   srManager ='Kyle Wander'
-//   teamsInvolved ='LM-Apps'
-//   comms =''
-//   commsUrl =''
-//   commsText =''
-//   fleetMigrationImpact ='No'
-//   assignedResource ='No'
-//   additionalNotesUrl =''
-//   additionalNotesText =''
+function enableDebugValues(){
+  proxyUrl='http://inetgw.aa.com:9093'
+  clientId='38ca5562-5dcf-4f7a-9afa-75cd3f7d551b'
+  clientSecret= '6y2Zce-15M-.48cfNif.2LMC.CrVKTsj1C'
+  changeNo='testing-TOT'
+  status='Completed'
+  changeTitle='testing the tool'
+  application='LMO'
+  businessDescription =''
+  technicalDescription =''
+  impact ="No Outage Expected",
+  srManager ='Kyle Wander'
+  teamsInvolved ='LM-Apps'
+  comms =''
+  commsUrl =''
+  commsText =''
+  fleetMigrationImpact ='No'
+  assignedResource ='No'
+  additionalNotesUrl =''
+  additionalNotesText =''
 
-// }
+}
