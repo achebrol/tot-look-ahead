@@ -74,11 +74,22 @@ async function run() {
       Accept: 'application/json;odata=verbose',
       'Content-Type': 'application/json',
     };
-    const digestResponse = await fetch(`${url}/_api/contextinfo`, {
-      method: 'POST',
-      headers: digestTokenHeaders,
-    }).then((res) => res.json());
-    //console.log('digestResponse', digestResponse);
+    let digestResponse:any
+    if  (proxyUrl){
+      const agent =  httpsProxyAgent(proxyUrl)
+       digestResponse = await fetch(`${url}/_api/contextinfo`, {
+        method: 'POST',
+        agent: agent,
+        headers: digestTokenHeaders,
+      }).then((res) => res.json());
+    } else {
+       digestResponse = await fetch(`${url}/_api/contextinfo`, {
+        method: 'POST',
+        headers: digestTokenHeaders,
+      }).then((res) => res.json());
+
+    }
+      //console.log('digestResponse', digestResponse);
     const digest = digestResponse.d.GetContextWebInformation.FormDigestValue;
     //3.Create TOT LookAhead Item    
     const lookAheadItemBody = {
@@ -86,7 +97,7 @@ async function run() {
         type: listNameType,
       },
       Change_x0020__x0023__x0020_Requi: changeNo || 'N/A',
-      Scheduled: status || 'Completed',
+      Scheduled: status || 'Complete',
       Application_x002f_System: application,
       Attachments: false,
       Title: changeTitle,
@@ -120,15 +131,30 @@ async function run() {
 
       'X-RequestDigest': digest,
     };    
-    const itemResponse = await fetch(listUrl, {
-      method: 'POST',
-      body: JSON.stringify(lookAheadItemBody),
-      headers: lookAheadItemHeaders,
-    }).then((res) => {
-      console.log(res.clone().status);
-      console.log(res.clone().statusText);        
-      return res.json();
-    });
+    let itemResponse:any
+    if  (proxyUrl){
+       const agent =  httpsProxyAgent(proxyUrl)
+        itemResponse = await fetch(listUrl, {
+        method: 'POST',
+        agent: agent,
+        body: JSON.stringify(lookAheadItemBody),
+        headers: lookAheadItemHeaders,
+      }).then((res) => {
+        console.log(res.clone().status);
+        console.log(res.clone().statusText);        
+        return res.json();
+      });
+    } else {
+       itemResponse = await fetch(listUrl, {
+        method: 'POST',
+        body: JSON.stringify(lookAheadItemBody),
+        headers: lookAheadItemHeaders,
+      }).then((res) => {
+        console.log(res.clone().status);
+        console.log(res.clone().statusText);        
+        return res.json();
+      }); 
+    } 
     
     console.log('Successfully added item to TOT LookAhead List');
     console.log('List Item Link:', itemResponse.d.__metadata.uri);
