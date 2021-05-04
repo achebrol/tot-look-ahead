@@ -2,15 +2,15 @@
   "$schema": "https://raw.githubusercontent.com/Microsoft/azure-pipelines-task-lib/master/tasks.schema.json",
   "id": "870d37ac-c99a-492c-b1fd-e8a2b094ad4f",
   "name": "tot-look-ahead",
-  "friendlyName": "TOT LookAhead Update",
-  "description": "Custom Task to add entry to TOT LookAhead",
+  "friendlyName": "TOT LookAhead Sharepoint List Update(Techops)",
+  "description": "Task to update TOT LookAhead Sharepoint List for TechOps",
   "helpMarkDown": "",
   "category": "Utility",
   "author": "Azeet Chebrolu",
   "version": {
-    "Major": 0,
-    "Minor": 1,
-    "Patch": 0
+    "Major": 2,
+    "Minor": 0,
+    "Patch": 99
   },
   "instanceNameFormat": "TOT Look Ahead Update",
   "inputs": [
@@ -180,7 +180,7 @@
       "name": "additionalNotesUrl",
       "type": "string",
       "label": "Additional Notes Url",
-      "defaultValue": "No",
+      "defaultValue": "",
       "required": false,
       "helpMarkDown": "additionalNotesUrl"
     },
@@ -191,6 +191,14 @@
       "defaultValue": "",
       "required": false,
       "helpMarkDown": "Alternative Text"
+    },
+    {
+      "name": "proxyUrl",
+      "type": "string",
+      "label": "Proxy Url",
+      "defaultValue": "http://inetgw.aa.com:9093",
+      "required": false,
+      "helpMarkDown": "Proxy Url"
     }
   ],
   "execution": {

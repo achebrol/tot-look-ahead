@@ -1,11 +1,13 @@
 import * as tl from 'azure-pipelines-task-lib/task';
 import fetch from 'node-fetch';
-import FormData = require("form-data");
-import {getWorkItemsforNotes, getReleaseEndTime , getReleaseStartTime} from './workitem';
+import FormData = require('form-data');
+import { getWorkItemsforNotes, getReleaseEndTime, getReleaseStartTime } from './workitem';
+
+import httpsProxyAgent from 'https-proxy-agent';
 
     const url = 'https://spteam.aa.com/sites/MnE/TechOps';
-    const listName = 'TOT-LookAhead-Copy';
-    const listNameType = 'SP.Data.TOTLookAheadCopyListItem';
+    const listName = 'TOT-LookAhead';
+    const listNameType = 'SP.Data.TOTLookAheadListItem';
     let clientId: string | undefined = tl.getInput('clientId', true);    
     let clientSecret: string | undefined = tl.getInput('clientSecret', true);
     let changeNo: string | undefined = tl.getInput('changeNo', true);
@@ -26,6 +28,7 @@ import {getWorkItemsforNotes, getReleaseEndTime , getReleaseStartTime} from './w
     let assignedResource: string | undefined = tl.getInput('assignedResource', false);
     let additionalNotesUrl: string | undefined = tl.getInput('additionalNotesUrl', false);
     let additionalNotesText: string | undefined = tl.getInput('additionalNotesText', false);
+    let proxyUrl: string | undefined = tl.getInput('proxyUrl', false);
 
 
 async function run() {
@@ -33,8 +36,8 @@ async function run() {
     
     startDate =await getReleaseStartTime() || (new Date).toLocaleString()
     endDate = await getReleaseEndTime() || (new Date).toLocaleString()
-    businessDescription =businessDescription+ '\n' + (await getWorkItemsforNotes());
-
+    businessDescription =(businessDescription||'')+ '\n' + (await getWorkItemsforNotes());
+    status = status == "Succeeded" ? "Complete" : status;
     const tenantName = 'spteam.aa.com';
     const tenantId = '49793faf-eb3f-4d99-a0cf-aef7cce79dc1';
     const resourceId = '00000003-0000-0ff1-ce00-000000000000';
@@ -45,12 +48,24 @@ async function run() {
     tokenBody.append('client_id', `${clientId}@${tenantId}`);
     tokenBody.append('client_secret', clientSecret);
     tokenBody.append('resource', `${resourceId}/${tenantName}@${tenantId}`);
-
+ ;
     //1. Get Access Token
-    const response = await fetch(tokenUrl, {
+    let response:any=''
+    if  (proxyUrl){
+     const agent =  httpsProxyAgent(proxyUrl)
+      console.log('proxyUrl' +proxyUrl)
+     response = await fetch(tokenUrl, {
       method: 'POST',
+      agent: agent,
       body: tokenBody,
     }).then((res) => res.json());
+  } else {
+    console.log('non proxyUrl')
+    response = await fetch(tokenUrl, {
+      method: 'POST',      
+      body: tokenBody,
+    }).then((res) => res.json());
+  }
     const access_token = response.access_token;
     //console.log('Access Token:', response);
     //2. Get Digest
@@ -59,19 +74,30 @@ async function run() {
       Accept: 'application/json;odata=verbose',
       'Content-Type': 'application/json',
     };
-    const digestResponse = await fetch(`${url}/_api/contextinfo`, {
-      method: 'POST',
-      headers: digestTokenHeaders,
-    }).then((res) => res.json());
-    //console.log('digestResponse', digestResponse);
+    let digestResponse:any
+    if  (proxyUrl){
+      const agent =  httpsProxyAgent(proxyUrl)
+       digestResponse = await fetch(`${url}/_api/contextinfo`, {
+        method: 'POST',
+        agent: agent,
+        headers: digestTokenHeaders,
+      }).then((res) => res.json());
+    } else {
+       digestResponse = await fetch(`${url}/_api/contextinfo`, {
+        method: 'POST',
+        headers: digestTokenHeaders,
+      }).then((res) => res.json());
+
+    }
+      //console.log('digestResponse', digestResponse);
     const digest = digestResponse.d.GetContextWebInformation.FormDigestValue;
-    //3.Create TOT LookAhead Item
+    //3.Create TOT LookAhead Item    
     const lookAheadItemBody = {
       __metadata: {
         type: listNameType,
       },
       Change_x0020__x0023__x0020_Requi: changeNo || 'N/A',
-      Scheduled: status || 'Completed',
+      Scheduled: status || 'Complete',
       Application_x002f_System: application,
       Attachments: false,
       Title: changeTitle,
@@ -95,7 +121,7 @@ async function run() {
         Description: additionalNotesUrl,
         Url: additionalNotesText || additionalNotesUrl,
       },
-       Fleet_x0020_Migration_x0020_Cale: false,
+      Fleet_x0020_Migration_x0020_Cale: false,
      };
     const listUrl = `${url}/_api/web/lists/GetByTitle('${listName}')/items`;
     const lookAheadItemHeaders = {
@@ -105,15 +131,30 @@ async function run() {
 
       'X-RequestDigest': digest,
     };    
-    const itemResponse = await fetch(listUrl, {
-      method: 'POST',
-      body: JSON.stringify(lookAheadItemBody),
-      headers: lookAheadItemHeaders,
-    }).then((res) => {
-      console.log(res.clone().status);
-      console.log(res.clone().statusText);       
-      return res.json();
-    });
+    let itemResponse:any
+    if  (proxyUrl){
+       const agent =  httpsProxyAgent(proxyUrl)
+        itemResponse = await fetch(listUrl, {
+        method: 'POST',
+        agent: agent,
+        body: JSON.stringify(lookAheadItemBody),
+        headers: lookAheadItemHeaders,
+      }).then((res) => {
+        console.log(res.clone().status);
+        console.log(res.clone().statusText);        
+        return res.json();
+      });
+    } else {
+       itemResponse = await fetch(listUrl, {
+        method: 'POST',
+        body: JSON.stringify(lookAheadItemBody),
+        headers: lookAheadItemHeaders,
+      }).then((res) => {
+        console.log(res.clone().status);
+        console.log(res.clone().statusText);        
+        return res.json();
+      }); 
+    } 
     
     console.log('Successfully added item to TOT LookAhead List');
     console.log('List Item Link:', itemResponse.d.__metadata.uri);
